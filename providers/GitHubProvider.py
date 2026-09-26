@@ -25,4 +25,3 @@ class GitHubProvider:
         return result
 
 
-
