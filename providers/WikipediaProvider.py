@@ -1,4 +1,5 @@
 import aiohttp
+from aiogram.exceptions import TelegramNetworkError
 from models.search_result import SearchResult
 
 class WikipediaProvider:
@@ -9,7 +10,7 @@ class WikipediaProvider:
             "format": "json",
             "generator": "search",
             "gsrsearch": self.text,
-            "gsrlimit": 5,
+            "gsrlimit": 3,
 
             "prop": "info|extracts",
 
@@ -26,13 +27,18 @@ class WikipediaProvider:
     }
     async def get_url(self):
         async with aiohttp.ClientSession(headers=self.headers) as session:
-            async with session.get(self.url, params=self.params) as resp:
-                clients = await resp.json()
-                result = []
-                for client in clients["query"]["pages"].values():
-                    client = SearchResult(client["title"], client["extract"], client["fullurl"], "Wikipedia").result()
+            try:
+                async with session.get(self.url, params=self.params) as resp:
+                    clients = await resp.json()
+                    result = []
+                    for client in clients["query"]["pages"].values():
+                        client = SearchResult(client["title"], client["extract"], client["fullurl"],
+                                              "Wikipedia").result()
                     result.append(client)
-        return result
+            except (aiohttp.ClientConnectionError, TelegramNetworkError) as e:
+                return f"Ошибка подключения к википедии: {e}"
+            else:
+                return result
 
 
 

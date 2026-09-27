@@ -12,9 +12,10 @@ async def any_message(message: Message):
     text = message.text
     start = time.time()
     resp = await SearchService(text).start_threads()
-    await message.answer(resp)
+    for i in resp:
+        await message.answer(i)
     end = time.time()
-    print(f"Всего {end-start} секунд...")
+    print(f"Всего {round(end-start, 2)} секунд...")
 
 
 

@@ -10,6 +10,5 @@ class SearchService:
         wiki = await WikipediaProvider(self.text).get_url()
         github = await GitHubProvider(self.text).get_url()
         stackoverflow = await StackOverFlowProvider(self.text).get_url()
-        results = [wiki, github, stackoverflow]
-        valid_results = [str(res) for res in results if res]
-        return "\n".join(valid_results)
+        results = [str(wiki), str(github), str(stackoverflow)]
+        return results
