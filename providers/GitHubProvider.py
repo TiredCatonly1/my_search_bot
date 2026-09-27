@@ -1,5 +1,4 @@
 import aiohttp
-from aiogram.exceptions import TelegramNetworkError
 from models.search_result import SearchResult
 class GitHubProvider:
     url = "https://api.github.com/search/issues"
@@ -24,7 +23,7 @@ class GitHubProvider:
                     for client in clients["items"]:
                         client = SearchResult(client['title'], client['body'], client['html_url'], "Github").result()
                         result.append(client)
-            except (aiohttp.ClientConnectionError, TelegramNetworkError) as e:
+            except aiohttp.ClientConnectionError as e:
                 return f"Ошибка подключения к Гитхабу: {e}"
             else:
                 return result

@@ -1,5 +1,4 @@
 import aiohttp
-from aiogram.exceptions import TelegramNetworkError
 from models.search_result import SearchResult
 class StackOverFlowProvider:
     url = "https://api.stackexchange.com/search/excerpts"
@@ -22,7 +21,7 @@ class StackOverFlowProvider:
                     for client in clients.get('items', []):
                         client = SearchResult(client['title'], client["excerpt"], f"https://api.stackexchange.com/{client['question_id']}", "Stack OverFlow").result()
                         results.append(client)
-            except (aiohttp.ClientConnectionError, TelegramNetworkError) as e:
+            except aiohttp.ClientConnectionError as e:
                 return f"Ошибка подключения к StackOverflow {e}"
             else:
                 return results

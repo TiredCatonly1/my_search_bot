@@ -1,5 +1,4 @@
 import aiohttp
-from aiogram.exceptions import TelegramNetworkError
 from models.search_result import SearchResult
 
 class WikipediaProvider:
@@ -34,8 +33,8 @@ class WikipediaProvider:
                     for client in clients["query"]["pages"].values():
                         client = SearchResult(client["title"], client["extract"], client["fullurl"],
                                               "Wikipedia").result()
-                    result.append(client)
-            except (aiohttp.ClientConnectionError, TelegramNetworkError) as e:
+                        result.append(client)
+            except aiohttp.ClientConnectionError as e:
                 return f"Ошибка подключения к википедии: {e}"
             else:
                 return result

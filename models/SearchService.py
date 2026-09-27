@@ -1,3 +1,4 @@
+import asyncio
 from providers.WikipediaProvider import WikipediaProvider
 from providers.GitHubProvider import GitHubProvider
 from providers.StackOverFlowProvider import StackOverFlowProvider
@@ -7,8 +8,8 @@ class SearchService:
         self.text = text
 
     async def start_threads(self):
-        wiki = await WikipediaProvider(self.text).get_url()
-        github = await GitHubProvider(self.text).get_url()
-        stackoverflow = await StackOverFlowProvider(self.text).get_url()
+        wiki, github, stackoverflow = await asyncio.gather(WikipediaProvider(self.text).get_url(),
+                                                           GitHubProvider(self.text).get_url(),
+                                                           StackOverFlowProvider(self.text).get_url())
         results = [str(wiki), str(github), str(stackoverflow)]
         return results
