@@ -26,18 +26,14 @@ class WikipediaProvider:
     }
     async def get_url(self):
         async with aiohttp.ClientSession(headers=self.headers) as session:
-            try:
-                async with session.get(self.url, params=self.params) as resp:
-                    clients = await resp.json()
-                    result = []
-                    for client in clients["query"]["pages"].values():
-                        client = SearchResult(client["title"], client["extract"], client["fullurl"],
-                                              "Wikipedia").result()
-                        result.append(client)
-            except aiohttp.ClientConnectionError as e:
-                return f"Ошибка подключения к википедии: {e}"
-            else:
-                return result
+            async with session.get(self.url, params=self.params) as resp:
+                clients = await resp.json()
+                result = []
+                for client in clients["query"]["pages"].values():
+                    client = SearchResult(client["title"], client["extract"], client["fullurl"],
+                                          "Wikipedia").result()
+                    result.append(client)
+        return result
 
 
 

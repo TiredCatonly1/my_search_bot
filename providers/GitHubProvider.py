@@ -16,16 +16,12 @@ class GitHubProvider:
 
     async def get_url(self):
         async with aiohttp.ClientSession() as session:
-            try:
-                async with session.get(self.url, headers=self.headers, params=self.params) as resp:
-                    clients = await resp.json()
-                    result = []
-                    for client in clients["items"]:
-                        client = SearchResult(client['title'], client['body'], client['html_url'], "Github").result()
-                        result.append(client)
-            except aiohttp.ClientConnectionError as e:
-                return f"Ошибка подключения к Гитхабу: {e}"
-            else:
-                return result
+            async with session.get(self.url, headers=self.headers, params=self.params) as resp:
+                clients = await resp.json()
+                result = []
+                for client in clients["items"]:
+                    client = SearchResult(client['title'], client['body'], client['html_url'], "Github").result()
+                    result.append(client)
+        return result
 
 
