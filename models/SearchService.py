@@ -15,17 +15,11 @@ class SearchService:
                                                            return_exceptions=True)
         results = []
         for client in clients:
-            try:
-                if isinstance(client, Exception):
-                    raise client
-            except ConnectionError:
-                results.append(f"Ошибка подключения к серверу...\nConnectionError")
-            except aiohttp.ClientError:
-                results.append("Ошибка клиента")
-            except Exception as e:
-                results.append(f"Непредвиденная ошибка ")
+            if isinstance(client, Exception):
+                if isinstance(client, ConnectionError):
+                    results.append(f"Ошибка подключения к серверу...\nConnectionError")
             else:
-                results.append(client)
+                results.append(str(client))
         return results
 
 

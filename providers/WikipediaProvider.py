@@ -1,4 +1,6 @@
+import asyncio
 import aiohttp
+from aiohttp import ClientResponseError, ClientError
 from models.search_result import SearchResult
 
 class WikipediaProvider:
@@ -25,15 +27,25 @@ class WikipediaProvider:
         "User-Agent": "MyTestBot (contacts: poznavajkatv84@gmail.com)"
     }
     async def get_url(self):
-        async with aiohttp.ClientSession(headers=self.headers) as session:
-            async with session.get(self.url, params=self.params) as resp:
-                clients = await resp.json()
-                result = []
-                for client in clients["query"]["pages"].values():
-                    client = SearchResult(client["title"], client["extract"], client["fullurl"],
-                                          "Wikipedia").result()
-                    result.append(client)
-        return result
+        try:
+            async with asyncio.timeout(10):
+                async with aiohttp.ClientSession(headers=self.headers) as session:
+                    async with session.get(self.url, params=self.params) as resp:
+                        resp.raise_for_status()
+                        clients = await resp.json()
+                        result = []
+                        for client in clients["query"]["pages"].values():
+                            client = SearchResult(client["title"], client["extract"], client["fullurl"],
+                                                  "Wikipedia").result()
+                            result.append(client)
+        except ClientResponseError as e:
+            return f"Ошибка ответа сервера Wikipedia...\n{e}"
+        except ClientError as e:
+            return f"Ошибка клиента Wikipedia...\n{e}"
+        except TimeoutError as e:
+            return f"Операция выполнялась слишком долго, поэтому ее отменили...\n{e}"
+        else:
+            return result
 
 
 
