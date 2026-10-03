@@ -8,5 +8,5 @@ class SearchResult:
     def result(self):
         return (f"Название: {self.title}\n"
                 f"Описание: {self.description}\n"
-                f"Ссылка: {self.url}\n"
+                f"Ссылка: {self.url} \n"
                 f"Источник: {self.source}")

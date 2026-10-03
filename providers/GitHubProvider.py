@@ -3,7 +3,7 @@ import aiohttp
 from aiohttp import ClientResponseError, ClientError
 from models.search_result import SearchResult
 class GitHubProvider:
-    url = "https://api.github.com/search/issues"
+    url = "https://api.github.com/search/repositories"
     headers  = {
         "Accept": "application/vnd.github+json",
         "X-Github-Api-Version": "2022-11-28"
@@ -13,7 +13,7 @@ class GitHubProvider:
         self.text = text
         self.params = {
             "q": self.text,
-            "per_page": 5
+            "per_page": 1
         }
 
     async def get_url(self):
@@ -25,7 +25,7 @@ class GitHubProvider:
                         clients = await resp.json()
                         result = []
                         for client in clients["items"]:
-                            client = SearchResult(client['title'], client['body'], client['html_url'], "Github").result()
+                            client = SearchResult(client['full_name'], client['description'], client['clone_url'], "Github").result()
                             result.append(client)
         except ClientResponseError as e:
             return f"Ошибка ответа сервера GitHub...\n{e}"
