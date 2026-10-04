@@ -11,15 +11,15 @@ class WikipediaProvider:
             "format": "json",
             "generator": "search",
             "gsrsearch": self.text,
-            "gsrlimit": 3,
+            "gsrsort": 'relevance',
+            "gsrlimit": 1,
 
             "prop": "info|extracts",
 
             "inprop": "url",
             "exintro": "1",
             "explaintext": "1",
-            "exsentences": 3,
-            "elexlimit": 5
+            "exsentences": 3
         }
 
     url = "https://en.wikipedia.org/w/api.php"
