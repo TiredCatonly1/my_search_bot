@@ -6,10 +6,9 @@ from providers.StackOverFlowProvider import StackOverFlowProvider
 class SearchService:
     def __init__(self, text):
         self.text = text
-
+    sem = asyncio.Semaphore(3)
     async def start_threads(self):
-        sem = asyncio.Semaphore(3)
-        async with sem:
+        async with self.sem:
             clients = await asyncio.gather(WikipediaProvider(self.text).get_url(),
                                                                GitHubProvider(self.text).get_url(),
                                                                StackOverFlowProvider(self.text).get_url(),

@@ -6,7 +6,7 @@ class SearchResult:
         self.source = source
 
     def result(self):
-        return (f"Название: {self.title}\n"
-                f"Описание: {self.description}\n"
-                f"Ссылка: {self.url} \n"
-                f"Источник: {self.source}")
+        return (f"Название: {self.title} "
+                f"Описание: {self.description} "
+                f"Ссылка: {self.url} "
+                f"Источник: {self.source} ")
