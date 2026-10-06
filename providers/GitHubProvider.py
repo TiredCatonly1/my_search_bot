@@ -1,7 +1,7 @@
 import asyncio
 import aiohttp
 from aiohttp import ClientResponseError, ClientError
-from models.search_result import SearchResult
+from models.search_result import GitHubResult
 class GitHubProvider:
     url = "https://api.github.com/search/repositories"
     headers  = {
@@ -23,10 +23,8 @@ class GitHubProvider:
                     async with session.get(self.url, headers=self.headers, params=self.params) as resp:
                         resp.raise_for_status()
                         clients = await resp.json()
-                        result = []
                         for client in clients["items"]:
-                            client = SearchResult(client['full_name'], client['description'], client['clone_url'], "Github").result()
-                            result.append(client)
+                            client = GitHubResult(client['full_name'], client['description'], client['clone_url'], "Github", client["stargazers_count"], client["language"]).result()
         except ClientResponseError as e:
             return f"Ошибка ответа сервера GitHub...\n{e}"
         except ClientError as e:
@@ -34,6 +32,6 @@ class GitHubProvider:
         except TimeoutError as e:
             return f"Операция выполнялась слишком долго, поэтому ее отменили...\n{e}"
         else:
-            return result
+            return client
 
 

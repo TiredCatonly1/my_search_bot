@@ -12,8 +12,7 @@ async def any_message(message: Message):
     text = message.text
     start = time.time()
     resp = await SearchService(text).start_threads()
-    for i in resp:
-        await message.answer(i)
+    await message.answer(' '.join(resp), parse_mode='HTML')
     end = time.time()
     print(f"Всего {round(end-start, 2)} секунд...")
 

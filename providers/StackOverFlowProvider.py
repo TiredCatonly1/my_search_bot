@@ -1,7 +1,7 @@
 import asyncio
 import aiohttp
 from aiohttp import ClientResponseError, ClientError
-from models.search_result import SearchResult
+from models.search_result import StackOverFlowResult
 class StackOverFlowProvider:
     url = "https://api.stackexchange.com/2.3/search/advanced"
     def __init__(self, text):
@@ -21,10 +21,8 @@ class StackOverFlowProvider:
                     async with session.get(self.url, params=self.params) as resp:
                         resp.raise_for_status()
                         clients = await resp.json()
-                        results = []
                         for client in clients.get('items', []):
-                            client = SearchResult(client.get('title', ""), client.get("excerpt", ""), client.get("link", ""), "Stack OverFlow").result()
-                            results.append(client)
+                            client = StackOverFlowResult(client.get('title', ""), client.get("excerpt", ""), client.get("link", ""), "Stack OverFlow", client.get("score", ""), client.get("answer_count", "")).result()
         except ClientResponseError as e:
             return f"Сервер StackOverFlow не отвечает...\n{e}"
         except ClientError as e:
@@ -32,5 +30,5 @@ class StackOverFlowProvider:
         except TimeoutError as e:
             return f"Операция выполнялась слишком долго, поэтому ее отменили...\n{e}"
         else:
-            return results
+            return client
 
